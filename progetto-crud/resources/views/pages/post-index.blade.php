@@ -2,10 +2,16 @@
 
 @section('section')
 
-  {{-- <ul>
+
     @foreach ($posts as $post)
-      <li>{{$post}}</li>
+
+      <post
+      :title= "'{{ $post -> title}}'"
+      :content= "'{{ $post -> content}}'"
+      :likes= "{{ $post -> likes}}"
+      >
+      </post>
+
     @endforeach
-  </ul> --}}
-  <example-component></example-component>
+
 @endsection
