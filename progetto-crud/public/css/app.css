@@ -10956,3 +10956,9 @@ body .card {
   background-color: lightblue;
 }
 
+body i,
+body h1 {
+  display: inline-block;
+  margin: 0 10px;
+}
+
