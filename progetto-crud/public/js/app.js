@@ -1908,6 +1908,36 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1980,7 +2010,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       editFocus: '',
       liked: false,
       // variabili di supporto x non modificare le props
@@ -1989,11 +2021,16 @@ __webpack_require__.r(__webpack_exports__);
       // altre variabili di supp dopo l'axios post x aggiornare il front-end dopo la modifica back-end senza ricaricare pagina
       sPostTitle: this.title,
       sPostContent: this.content,
+      sPostLikes: this.likes,
       uPostTitle: this.title,
       uPostContent: this.content,
+      uPostLikes: this.likes,
       // distruggere una carta(parto dal front-end)
-      deleted: false
-    };
+      deleted: false,
+      // flag create
+      sCreator: this.creator,
+      postId: this.id
+    }, _defineProperty(_ref, "postTitle", this.title), _defineProperty(_ref, "postContent", this.content), _defineProperty(_ref, "postLikes", this.likes), _ref;
   },
   methods: {
     setLike: function setLike() {
@@ -2007,8 +2044,28 @@ __webpack_require__.r(__webpack_exports__);
     isEditFocus: function isEditFocus(elem) {
       return this.editFocus === elem;
     },
-    update: function update() {
+    create: function create() {
       var _this = this;
+
+      var post = {
+        title: this.postTitle,
+        content: this.postContent
+      };
+      axios.post('/post/create', post).then(function (r) {
+        _this.postId = r.id;
+        _this.uPostTitle = _this.sPostTitle = r.title;
+        _this.uPostContent = _this.sPostContent = r.content;
+        _this.uPostLikes = _this.sPostLikes = 1;
+        _this.sCreator = false;
+      })["catch"](function (e) {
+        return console.log('error', e);
+      }); // ricarica pagina dopo il click tasto save;
+
+      location.reload();
+      return false;
+    },
+    update: function update() {
+      var _this2 = this;
 
       var post = {
         title: this.postTitle,
@@ -2017,8 +2074,8 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/post/update/' + this.id, post).then(function (r) {
         console.log('response', r);
-        _this.uPostTitle = _this.sPostTitle = _this.postTitle;
-        _this.uPostContent = _this.sPostContent = _this.postContent;
+        _this2.uPostTitle = _this2.sPostTitle = _this2.postTitle;
+        _this2.uPostContent = _this2.sPostContent = _this2.postContent;
       })["catch"](function (e) {
         return console.log('error', e);
       });
@@ -2032,12 +2089,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     // cancella dal database
     destroy: function destroy() {
-      var _this2 = this;
+      var _this3 = this;
 
       // cancella lato front ma non back
       // this.deleted = true;
       axios.get('/post/destroy/' + this.id).then(function (r) {
-        _this2.deleted = true;
+        _this3.deleted = true;
       })["catch"](function (e) {
         return console.log('error', e);
       });
@@ -2046,7 +2103,7 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     shortContent: function shortContent() {
       var maxLng = 100;
-      return this.postContent.length > maxLng ? this.postContent.substring(0, maxLng) + '...' : this.postContent;
+      return this.postContent != undefined && this.postContent.length > maxLng ? this.postContent.substring(0, maxLng) + '...' : this.postContent;
     },
     heartCount: function heartCount() {
       return this.likes + (this.liked ? 1 : 0);
@@ -2059,7 +2116,8 @@ __webpack_require__.r(__webpack_exports__);
     id: Number,
     title: String,
     content: String,
-    likes: Number
+    likes: Number,
+    creator: Boolean
   }
 });
 
@@ -37686,207 +37744,365 @@ var render = function() {
             staticClass: "card my-3"
           },
           [
-            _c("div", { staticClass: "card-header" }, [
-              _c(
-                "h1",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: !_vm.isEditFocus("title"),
-                      expression: "!isEditFocus('title')"
-                    }
-                  ]
-                },
-                [
-                  _c("strong", [
-                    _c(
-                      "span",
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.sCreator,
+                    expression: "!sCreator"
+                  }
+                ],
+                staticClass: "card-header"
+              },
+              [
+                _c(
+                  "h1",
+                  {
+                    directives: [
                       {
-                        on: {
-                          click: function($event) {
-                            return _vm.setEditFocus("title")
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.isEditFocus("title"),
+                        expression: "!isEditFocus('title')"
+                      }
+                    ]
+                  },
+                  [
+                    _c("strong", [
+                      _c(
+                        "span",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.setEditFocus("title")
+                            }
                           }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                      " +
-                            _vm._s(_vm.postTitle) +
-                            "  [id=" +
-                            _vm._s(_vm.id) +
-                            "]\n                    "
-                        )
-                      ]
-                    )
-                  ])
-                ]
-              ),
-              _vm._v(" "),
-              _c("i", {
-                staticClass: "fas fa-trash-alt fa-2x",
-                on: {
-                  click: function($event) {
-                    return _vm.destroy()
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.isEditFocus("title"),
-                    expression: "isEditFocus('title')"
-                  },
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.postTitle,
-                    expression: "postTitle"
-                  }
-                ],
-                attrs: { type: "text" },
-                domProps: { value: _vm.postTitle },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.postTitle = $event.target.value
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c(
-                "p",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: !_vm.isEditFocus("content"),
-                      expression: "!isEditFocus('content')"
-                    }
-                  ],
-                  on: {
-                    click: function($event) {
-                      return _vm.setEditFocus("content")
-                    }
-                  }
-                },
-                [
-                  _c("strong", [
-                    _vm._v(
-                      "\n                      " +
-                        _vm._s(_vm.shortContent) +
-                        "\n                      "
-                    )
-                  ])
-                ]
-              ),
-              _vm._v(" "),
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.postContent,
-                    expression: "postContent"
-                  },
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.isEditFocus("content"),
-                    expression: "isEditFocus('content')"
-                  }
-                ],
-                attrs: { rows: "4", cols: "50" },
-                domProps: { value: _vm.postContent },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.postContent = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: !_vm.isEditFocus(""),
-                      expression: "!isEditFocus('')"
-                    }
-                  ],
-                  staticClass: "btn btn-primary",
-                  attrs: { type: "button", name: "button" },
-                  on: {
-                    click: function($event) {
-                      return _vm.update()
-                    }
-                  }
-                },
-                [_vm._v("\n                      SAVE\n                    ")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: !_vm.isEditFocus(""),
-                      expression: "!isEditFocus('')"
-                    }
-                  ],
-                  staticClass: "btn btn-danger",
-                  attrs: { type: "button", name: "button" },
-                  on: {
-                    click: function($event) {
-                      return _vm.cancel()
-                    }
-                  }
-                },
-                [_vm._v("\n                      CANCEL\n                    ")]
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-footer" }, [
-              _c("div", [
-                _vm._v(
-                  "\n                    " +
-                    _vm._s(_vm.heartCount) +
-                    "\n                    "
+                        },
+                        [
+                          _vm._v(
+                            "\n                      " +
+                              _vm._s(_vm.postTitle) +
+                              "  [id=" +
+                              _vm._s(_vm.id) +
+                              "]\n                    "
+                          )
+                        ]
+                      )
+                    ])
+                  ]
                 ),
+                _vm._v(" "),
                 _c("i", {
-                  staticClass: "fa-heart far",
-                  class: _vm.heartIcon,
+                  staticClass: "fas fa-trash-alt fa-2x",
                   on: {
                     click: function($event) {
-                      return _vm.setLike()
+                      return _vm.destroy()
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.isEditFocus("title"),
+                      expression: "isEditFocus('title')"
+                    },
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.postTitle,
+                      expression: "postTitle"
+                    }
+                  ],
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.postTitle },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.postTitle = $event.target.value
                     }
                   }
                 })
-              ])
-            ])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.sCreator,
+                    expression: "sCreator"
+                  }
+                ],
+                staticClass: "card-header"
+              },
+              [
+                _c("H3", [_vm._v("NEW POST")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.postTitle,
+                      expression: "postTitle"
+                    }
+                  ],
+                  attrs: { type: "text" },
+                  domProps: { value: _vm.postTitle },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.postTitle = $event.target.value
+                    }
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.sCreator,
+                    expression: "!sCreator"
+                  }
+                ],
+                staticClass: "card-body"
+              },
+              [
+                _c(
+                  "p",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.isEditFocus("content"),
+                        expression: "!isEditFocus('content')"
+                      }
+                    ],
+                    on: {
+                      click: function($event) {
+                        return _vm.setEditFocus("content")
+                      }
+                    }
+                  },
+                  [
+                    _c("strong", [
+                      _vm._v(
+                        "\n                      " +
+                          _vm._s(_vm.shortContent) +
+                          "\n                      "
+                      )
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.postContent,
+                      expression: "postContent"
+                    },
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.isEditFocus("content"),
+                      expression: "isEditFocus('content')"
+                    }
+                  ],
+                  attrs: { rows: "4", cols: "50" },
+                  domProps: { value: _vm.postContent },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.postContent = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.isEditFocus(""),
+                        expression: "!isEditFocus('')"
+                      }
+                    ],
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button", name: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.update()
+                      }
+                    }
+                  },
+                  [_vm._v("\n                      SAVE\n                    ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.isEditFocus(""),
+                        expression: "!isEditFocus('')"
+                      }
+                    ],
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", name: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.cancel()
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                      CANCEL\n                    "
+                    )
+                  ]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.sCreator,
+                    expression: "sCreator"
+                  }
+                ],
+                staticClass: "card-body"
+              },
+              [
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.postContent,
+                      expression: "postContent"
+                    }
+                  ],
+                  attrs: { cols: "45", rows: "4" },
+                  domProps: { value: _vm.postContent },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.postContent = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  { staticClass: "btn btn-primary", on: { click: _vm.create } },
+                  [_vm._v("\n                      SAVE\n                  ")]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.sCreator,
+                    expression: "!sCreator"
+                  }
+                ],
+                staticClass: "card-footer"
+              },
+              [
+                _c("div", [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(_vm.heartCount) +
+                      "\n                    "
+                  ),
+                  _c("i", {
+                    staticClass: "fa-heart far",
+                    class: _vm.heartIcon,
+                    on: {
+                      click: function($event) {
+                        return _vm.setLike()
+                      }
+                    }
+                  })
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.sCreator,
+                    expression: "sCreator"
+                  }
+                ],
+                staticClass: "card-footer"
+              },
+              [_vm._m(0)]
+            )
           ]
         )
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [
+      _c("strong", [_vm._v("1")]),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa-heart fas" })
+    ])
+  }
+]
 render._withStripped = true
 
 

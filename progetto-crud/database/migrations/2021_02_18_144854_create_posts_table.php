@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
 
             $table  -> string('title');
             $table  -> text('content');
-            $table  -> integer('likes') -> unsigned();
+            $table  -> integer('likes') -> unsigned() -> default(1);
 
             $table->timestamps();
           });

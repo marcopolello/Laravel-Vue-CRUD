@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PostController@postIndex')
       -> name('post-index');
+// ROTTA CREATE
+Route::post('/post/create', 'PostController@postCreate')
+      -> name('post-create');
 
 Route::post('/post/update/{id}', 'PostController@postUpdate')
       -> name('post-update');
